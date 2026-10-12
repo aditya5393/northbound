@@ -1,0 +1,357 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NorthBound</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#0b1b33;--mut:#5b6b85;--line:#dbe3ef;--blue:#2563eb;--green:#15803d;--red:#dc2626;--amber:#b45309;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1428;--card:#10203d;--ink:#e8eefb;--mut:#92a5c8;--line:#203358;--blue:#5b9bff;--green:#34d399;--red:#ff7b7b;--amber:#f5b94a}}
+:root[data-theme="dark"]{--bg:#0a1428;--card:#10203d;--ink:#e8eefb;--mut:#92a5c8;--line:#203358;--blue:#5b9bff;--green:#34d399;--red:#ff7b7b;--amber:#f5b94a}
+:root[data-theme="titanium"]{--bg:#09090b;--card:#18181b;--ink:#f4f4f5;--mut:#a1a1aa;--line:#27272a;--blue:#71717a;--green:#22c55e;--red:#ef4444;--amber:#f59e0b}
+:root[data-theme="stealth"]{--bg:#000000;--card:#161618;--ink:#ffffff;--mut:#8e8e93;--line:#2c2c2e;--blue:#38bdf8;--green:#30d158;--red:#ff453a;--amber:#ffd60a}
+:root[data-theme="light"]{--bg:#f3f6fb;--card:#fff;--ink:#0b1b33;--mut:#5b6b85;--line:#dbe3ef;--blue:#2563eb;--green:#15803d;--red:#dc2626;--amber:#b45309}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+.demo{background:#1d4ed8;color:#fff;font-size:12px;text-align:center;padding:6px 10px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#16a34a);display:grid;place-items:center;color:#fff;font-style:normal;font-size:16px}
+.ib{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:20px;cursor:pointer}
+.top{max-width:1200px;margin:0 auto;padding:12px 16px 0}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg button{flex:1;border:0;background:none;color:var(--mut);font:inherit;font-weight:700;padding:10px;border-radius:9px;cursor:pointer;min-height:44px}
+.seg .on{background:var(--blue);color:#fff}
+.tb{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.tb select{flex:1;min-width:150px}
+select,input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px;max-width:100%}
+input.sel,.sheet input[type=checkbox]{min-height:0;width:22px;height:22px;accent-color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.wrap{display:flex;max-width:1200px;margin:0 auto}
+nav{width:190px;flex:none;padding:16px 10px;position:sticky;top:70px;align-self:flex-start}
+nav button{display:flex;gap:10px;width:100%;align-items:center;border:0;background:none;color:var(--mut);font:inherit;font-weight:600;padding:11px 12px;border-radius:10px;cursor:pointer;min-height:44px;text-align:left}
+nav .on{background:var(--card);color:var(--ink);box-shadow:inset 3px 0 0 var(--green)}
+main{flex:1;min-width:0;padding:16px}
+@media(max-width:760px){.wrap{display:block}nav{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line);z-index:6}nav button{flex:1;flex-direction:column;gap:2px;font-size:12px;justify-content:center;align-items:center;text-align:center;padding:6px}nav .on{box-shadow:inset 0 3px 0 var(--green)}main{padding-bottom:96px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}.kpis .card{margin:0}
+.k{color:var(--mut);font-size:13px}.v{font-size:26px;font-weight:800;margin-top:2px}
+.g{color:var(--green)}.r{color:var(--red)}.m{color:var(--mut)}.a{color:var(--amber)}
+.head{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}h1,h2{font-size:22px;margin:0}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:8px 0}.bar b{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}.bar b.x{background:var(--amber)}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+.fl{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.fl input{flex:1;min-width:120px}
+.pri{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.sec{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+.paper{position:relative;background:#fff;color:#0b1b33;border-radius:10px;padding:22px;border:1px solid #cfd8e6;margin-bottom:12px}
+.pr{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e3e9f2}
+.stamp{position:absolute;right:22px;bottom:24px;border:4px solid #15803d;color:#15803d;font-weight:800;font-size:34px;letter-spacing:.1em;padding:2px 16px;border-radius:8px;transform:rotate(-14deg);opacity:.85}
+.ov{position:fixed;inset:0;background:rgba(3,10,25,.65);display:none;z-index:20;align-items:flex-end;justify-content:center}.ov.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media(min-width:761px){.ov{align-items:center}.sheet{border-radius:16px}}
+#auth{min-height:80vh;display:grid;place-items:center;padding:20px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;background:#0b1b33;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;display:none;z-index:30;max-width:90%}
+@media print{body *{visibility:hidden}.paper,.paper *{visibility:visible}.ov,.sheet{position:static;max-height:none;overflow:visible}.paper{page-break-after:always}}
+</style></head><body>
+<div id="auth" hidden><div class="card" style="max-width:400px;text-align:center;padding:32px 24px">
+  <div class="logo" style="justify-content:center;font-size:26px;margin-bottom:8px"><i>N</i>NorthBound</div>
+  <p class="m" style="margin-bottom:20px">Travel and tour management: trips, ledger, customer installments &amp; printable bills.</p>
+  <button class="pri" style="width:100%;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;font-size:15px;border-radius:12px" onclick="login()">
+    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+    Sign in with Google (Owner)
+  </button>
+  <div style="margin-top:16px">
+    <button class="sec" style="width:100%;font-size:13px;border-radius:10px;padding:9px" onclick="guestMode()">Continue in Offline Testing Mode &rarr;</button>
+  </div>
+  <p class="k" style="margin-top:14px;font-size:12px">Signing in as <b>adityakumarjbad92@gmail.com</b> grants full Owner access with automatic cloud backup.</p>
+</div></div>
+<div id="app" hidden><div class="demo" id="cloud-banner" style="display:none"></div>
+<header>
+  <div class="logo"><i>N</i>NorthBound</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="top-user-pill"></div>
+    <button class="ib" onclick="openSet()" aria-label="Settings">⚙️</button>
+  </div>
+</header>
+<div class="top"><div class="seg" id="seg"></div><div class="tb" id="tbar"></div></div>
+<div class="wrap"><nav id="nav"></nav><main id="main"></main></div></div>
+<div class="ov" id="ov" onclick="if(event.target===this)closeM()"><div class="sheet" id="sheet"></div></div><div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id),sum=a=>a.reduce((s,x)=>s+x,0),R=n=>n*100,TODAY='2026-10-12';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inr=p=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0,maximumFractionDigits:2}).format(p/100);
+const rs=p=>'Rs. '+new Intl.NumberFormat('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2}).format(p/100);
+const dt=s=>new Date(s+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),mon=s=>new Date(s+'T00:00:00').toLocaleDateString('en-IN',{month:'short'});
+const P=(d,a,m,ref)=>({d,a:R(a),m,ref});
+
+try{const saved=localStorage.getItem('nb-data');if(saved){const p=JSON.parse(saved);if(p&&Array.isArray(p.trips)&&p.trips.length)D=p;}}catch(e){}
+function persist(){try{localStorage.setItem('nb-data',JSON.stringify(D))}catch(e){}if(window.cloudPush)window.cloudPush()}
+let D={trips:[{id:'t0',n:'Goa Beach Retreat',dest:'Goa',s:'2025-12-10',e:'2025-12-14',st:'Completed'},{id:'t1',n:'Spiti Valley Expedition',dest:'Spiti, Himachal Pradesh',s:'2026-09-05',e:'2026-09-12',st:'Completed'},{id:'t2',n:'Rajasthan Heritage Tour',dest:'Jaipur to Udaipur',s:'2026-11-14',e:'2026-11-20',st:'Open'}],
+cust:[{id:'c1',n:'Aarav Mehta',ph:'+91 98765 43210'},{id:'c2',n:'Priya Nair',ph:'+91 99887 76655'},{id:'c3',n:'Rohan Kulkarni',ph:'+91 98200 11223'},{id:'c4',n:'Ananya Iyer',ph:'+91 97310 55667'}],
+enr:[{id:'e1',c:'c1',t:'t0',price:R(28000),disc:0,pay:[P('2025-11-02',28000,'UPI','UPI-3301')]},{id:'e2',c:'c2',t:'t0',price:R(28000),disc:0,pay:[P('2025-11-05',20000,'UPI','UPI-3350')]},
+{id:'e3',c:'c1',t:'t1',price:R(45000),disc:0,pay:[P('2026-08-02',20000,'UPI','UPI-4821'),P('2026-08-20',25000,'Bank transfer','NEFT-7730')]},{id:'e4',c:'c2',t:'t1',price:R(45000),disc:R(2000),pay:[P('2026-08-05',22000,'UPI','UPI-5102')]},
+{id:'e5',c:'c1',t:'t2',price:R(38000),disc:0,pay:[P('2026-09-15',15000,'UPI','UPI-6644')]},{id:'e6',c:'c3',t:'t2',price:R(38000),disc:0,pay:[P('2026-10-06',38000,'Cash','CASH-31')]},
+{id:'e7',c:'c4',t:'t2',price:R(38000),disc:R(3000),pay:[P('2026-09-18',35000,'Card','CARD-9981')]},{id:'e8',c:'c2',t:'t2',price:R(38000),disc:0,pay:[]}],
+exp:[{t:'t0',cat:'Hotels',v:'Palm Resort',a:R(40000),d:'2025-12-01'},{t:'t0',cat:'Vehicles',v:'Goa Cabs',a:R(12000),d:'2025-12-08'},{t:'t1',cat:'Vehicles',v:'Himalayan Cabs',a:R(28000),d:'2026-09-04'},{t:'t1',cat:'Hotels',v:'Kaza Homestays',a:R(31000),d:'2026-09-05'},{t:'t1',cat:'Camps',v:'Chandratal Camp',a:R(9000),d:'2026-09-08'},{t:'t2',cat:'Hotels',v:'Heritage Haveli',a:R(30000),d:'2026-10-02'},{t:'t2',cat:'Vehicles',v:'Marwar Travels',a:R(18000),d:'2026-10-05'}]};
+let pf={theme:'dark',w:[['enrolled',1],['received',1],['profit',1]]};try{pf={...pf,...JSON.parse(localStorage.getItem('nb-pf')||'{}')}}catch(e){}
+const S={user:null,mode:'company',view:'home',trip:'t2',open:null,enr:null};
+const net=e=>sum(e.pay.map(p=>p.a)),rev=e=>e.price-e.disc,due=e=>rev(e)-net(e),cu=id=>D.cust.find(c=>c.id===id),tr=id=>D.trips.find(t=>t.id===id),no=e=>'NB-'+tr(e.t).s.slice(0,4)+'-'+String(D.enr.indexOf(e)+1).padStart(4,'0');
+const tot=t=>{const es=D.enr.filter(e=>e.t===t),ex=D.exp.filter(x=>x.t===t),rv=sum(es.map(rev)),got=sum(es.map(net)),inv=sum(ex.map(x=>x.a));return{es,ex,rv,got,inv,due:rv-got,pl:rv-inv}};
+const pill=(x,c)=>`<span class="pill ${c}">${x}</span>`,stat=e=>due(e)===0?pill('Paid','g'):net(e)===0?pill('Unpaid','r'):pill('Partial','a');
+const card=(l,v,s='',c='')=>`<div class="card"><div class="k">${l}</div><div class="v ${c}">${v}</div><div class="k">${s}</div></div>`;
+const NAV={company:[['home','Home','🏠'],['exp','Expenditure','🚐'],['money','Money','💰'],['hist','History','📅']],customers:[['ppl','Enrolled','👥'],['bill','Billing','💳'],['paid','Bills','🧾']]};
+const WT={enrolled:'Enrolled people',received:'Payments received',profit:'Trip profit'};
+const W={enrolled:T=>card('Enrolled people',T.es.length,'on this trip'),
+received:T=>card('Payments received',inr(T.got),`from ${T.es.filter(e=>net(e)>0).length} of ${T.es.length} people. Remaining to receive: <b class="a">${inr(T.due)}</b>`,'g'),
+profit:T=>card(T.pl<0?'Trip loss':'Trip profit',inr(Math.abs(T.pl)),`Revenue ${inr(T.rv)} minus expenses ${inr(T.inv)}`,T.pl<0?'r':'g')};
+const picker=(L,k)=>L.length?`<div class="card"><label class="row"><b>Select all</b><input type="checkbox" onchange="document.querySelectorAll('#pk-${k} .sel').forEach(c=>c.checked=this.checked)"></label><div id="pk-${k}">${L.map(e=>`<label class="row"><span><b>${esc(cu(e.c).n)}</b><br><span class="k">${cu(e.c).ph}<br>Received ${inr(net(e))}, due ${inr(due(e))}</span></span><input class="sel" type="checkbox" value="${e.id}"></label>`).join('')}</div><div class="fl"><button class="sec" onclick="pv('${k}')">Preview</button><button class="pri" onclick="out('${k}','dl')">Download PDF</button><button class="sec" onclick="out('${k}','sh')">Share (WhatsApp)</button></div></div><div id="pv-${k}"></div>`:'<div class="card m">No one here yet.</div>';
+const paper=(e,k)=>{const c=cu(e.c),t=tr(e.t),d=due(e),ok=k==='paid'&&d===0;return `<div class="paper"><div style="display:flex;justify-content:space-between;gap:8px;border-bottom:2px solid #0b1b33;padding-bottom:10px"><div><b style="font-size:19px">NorthBound</b><br><small>Travel and tours</small></div><div style="text-align:right"><b>${ok?'Paid-in-full receipt':'Booking statement'}</b><br><small>${no(e)}</small></div></div><p><b>${esc(c.n)}</b><br>${c.ph}</p><p>${esc(t.n)}<br><small>${esc(t.dest)}, ${dt(t.s)} to ${dt(t.e)}</small></p><div class="pr"><span>Booking price</span><b>${inr(e.price)}</b></div><div class="pr"><span>Discount</span><b>${inr(e.disc)}</b></div><div class="pr"><span>Received</span><b>${inr(net(e))}</b></div><div class="pr" style="font-size:17px"><b>Remaining due</b><b>${inr(d)}</b></div>${ok?'<div class="stamp">PAID</div>':''}<div style="height:${ok?44:6}px"></div></div>`};
+const V={
+home(){const T=tot(S.trip),on=pf.w.filter(w=>w[1]);return `<div class="head"><h1>Home</h1></div>${on.length?`<div class="kpis">${on.map(w=>W[w[0]](T)).join('')}</div>`:'<div class="card m">All widgets are hidden. Turn them on in Settings.</div>'}`},
+exp(){const ex=tot(S.trip).ex,cats=['Vehicles','Hotels','Camps','Other facilities'];return `<div class="head"><h1>Company expenditure</h1></div><div class="card"><b>Add spending for this trip</b><div class="fl"><select id="xc" aria-label="Category">${cats.map(c=>`<option>${c}</option>`).join('')}</select><input id="xv" placeholder="Vendor" aria-label="Vendor"><input id="xa" type="number" min="1" inputmode="numeric" placeholder="Amount in ₹" aria-label="Amount"><button class="pri" onclick="addX()">Add</button></div><p id="xm" class="r" style="margin:8px 0 0"></p></div>
+<div class="kpis">${cats.map(c=>card(c,inr(sum(ex.filter(x=>x.cat===c).map(x=>x.a)))) ).join('')}</div><div class="card"><b>Total ${inr(sum(ex.map(x=>x.a)))}</b>${ex.map(x=>`<div class="row"><div><b>${x.cat}</b>, ${esc(x.v)}<br><span class="k">${dt(x.d)}</span></div><b>${inr(x.a)}</b></div>`).join('')||'<p class="m">No spending recorded yet.</p>'}</div>`},
+money(){const T=tot(S.trip),mx=Math.max(T.rv,T.inv,1);return `<div class="head"><h1>Money</h1></div><div class="kpis">${card('Total received',inr(T.got),`from ${T.es.filter(e=>net(e)>0).length} people`,'g')}${card('Remaining to receive',inr(T.due),'','a')}${card('Total expenses',inr(T.inv),'for this trip')}${card(T.pl<0?'Loss':'Profit',inr(Math.abs(T.pl)),'revenue minus expenses',T.pl<0?'r':'g')}</div><div class="card"><b>Revenue from customers</b> ${inr(T.rv)}<div class="bar"><b style="width:${T.rv/mx*100}%"></b></div><b>Company expenses</b> ${inr(T.inv)}<div class="bar"><b class="x" style="width:${T.inv/mx*100}%"></b></div></div>`},
+hist(){const ys={};D.trips.forEach(t=>(ys[t.s.slice(0,4)]=ys[t.s.slice(0,4)]||[]).push(t));return `<div class="head"><h1>History</h1></div>`+Object.keys(ys).sort().reverse().map(y=>{const T=ys[y].map(t=>({t,...tot(t.id)})),s=k=>sum(T.map(x=>x[k]));return `<div class="card"><div class="row" style="padding-top:0"><b style="font-size:18px">${y}</b><b class="${s('pl')<0?'r':'g'}">${s('pl')<0?'Loss':'Profit'} ${inr(Math.abs(s('pl')))}</b></div><div class="k">Investment ${inr(s('inv'))}, revenue ${inr(s('rv'))}, pending ${inr(s('due'))}</div>${T.map(x=>`<div class="row"><div><b>${esc(x.t.n)}</b><br><span class="k">${mon(x.t.s)}: invested ${inr(x.inv)}, revenue ${inr(x.rv)}, pending ${inr(x.due)}</span></div><b class="${x.pl<0?'r':'g'}">${inr(x.pl)}</b></div>`).join('')}</div>`}).join('')},
+ppl(){const T=tot(S.trip),q=($('q')||{}).value||'';return `<div class="head"><h1>Enrolled people</h1></div><div class="kpis">${card('Enrolled on this trip',T.es.length,`${T.es.filter(e=>due(e)===0).length} fully paid`)}</div><div class="card"><b>Add a person</b><div class="fl"><input id="pn" placeholder="Full name" aria-label="Name"><input id="pp" type="tel" inputmode="numeric" placeholder="Phone (10 digits)" aria-label="Phone"><input id="pb" type="number" min="1" placeholder="Booking price ₹" aria-label="Price"><input id="pd" type="number" min="0" placeholder="Discount ₹" aria-label="Discount"><button class="pri" onclick="addP()">Add</button></div><p id="pm" class="r" style="margin:8px 0 0"></p></div><input type="search" id="q" value="${esc(q)}" placeholder="Search name or phone" aria-label="Search" style="width:100%;margin-bottom:12px" oninput="$('pl').innerHTML=V.pl()"><div id="pl" class="cols">${V.pl()}</div>`},
+pl(){const q=(($('q')||{}).value||'').toLowerCase(),ids=tot(S.trip).es.map(e=>e.c);return D.cust.filter(c=>ids.includes(c.id)&&(c.n+c.ph).toLowerCase().includes(q)).map(c=>{const hs=D.enr.filter(e=>e.c===c.id),o=S.open===c.id;return `<div class="card" style="cursor:pointer" onclick="S.open=S.open==='${c.id}'?null:'${c.id}';$('pl').innerHTML=V.pl()"><div class="row" style="padding-top:0"><b>${esc(c.n)}</b><span class="m">${c.ph}</span></div><div class="k">${hs.length} trip${hs.length>1?'s':''}. ${o?'Tap to hide history':'Tap for history'}</div>${o?hs.map(e=>`<div class="row"><div>${esc(tr(e.t).n)}<br><span class="k">Paid ${inr(net(e))} of ${inr(rev(e))}</span></div>${stat(e)}</div>`).join(''):''}</div>`}).join('')||'<p class="m">No one matches. Add a person above.</p>'},
+bill(){const T=tot(S.trip);return `<div class="head"><h1>Collection &amp; billing</h1></div>`+(T.es.map(e=>{const o=S.enr===e.id,pc=Math.round(net(e)/rev(e)*100);return `<div class="card"><div class="row" style="padding-top:0;cursor:pointer" onclick="S.enr=${o?'null':`'${e.id}'`};draw()"><div><b>${esc(cu(e.c).n)}</b><br><span class="k">${cu(e.c).ph}</span></div>${stat(e)}</div><div class="bar"><b style="width:${pc}%"></b></div><div class="row" style="border:0;padding:0"><span>Received <b class="g">${inr(net(e))}</b></span><span>Remaining <b class="a">${inr(due(e))}</b></span></div>${o?`<div style="margin-top:10px"><b>History</b>${e.pay.map(p=>`<div class="row"><div>${dt(p.d)}, ${p.m}<br><span class="k">${p.ref}</span></div><b class="g">+${inr(p.a)}</b></div>`).join('')||'<p class="m">No payments yet.</p>'}<div class="fl"><input id="amt" type="number" min="1" inputmode="numeric" placeholder="Amount in ₹" aria-label="Amount"><select id="mth" aria-label="Method"><option>UPI</option><option>Cash</option><option>Bank transfer</option><option>Card</option></select><button class="pri" onclick="rec()">Record payment</button></div><p id="msg" class="r" style="margin:8px 0 0"></p></div>`:''}</div>`}).join('')||'<div class="card m">No one is enrolled on this trip yet.</div>')},
+paid(){return `<div class="head"><h1>Paid bills</h1></div><p class="m">People who have paid in full. Select who to print; the green PAID stamp appears only when nothing is due.</p>`+picker(tot(S.trip).es.filter(e=>due(e)===0),'paid')}};
+function draw(){$('auth').hidden=!!S.user;$('app').hidden=!S.user;
+const tp = $('top-user-pill');
+if(tp){
+  if(S.user){
+    const isOwner = S.user.email.includes('adityakumarjbad92') || S.user.email.includes('northboundtrips1');
+    tp.innerHTML = `<span class="pill ${isOwner?'g':'m'}" style="cursor:pointer;font-size:11.5px;padding:3px 9px" onclick="openSet()">${isOwner?'👑 Owner':'Staff'}</span>`;
+  } else {
+    tp.innerHTML = `<button class="sec" style="font-size:12px;padding:5px 10px;min-height:0;border-radius:8px" onclick="login()">🔑 Sign in</button>`;
+  }
+}
+const cb = $('cloud-banner');
+if(cb){
+  if(S.user && !S.user.isGuest){
+    cb.style.display='block';
+    cb.style.background='#15803d';
+    cb.innerHTML = `🟢 Google Cloud Synced as <b>${esc(S.user.email)}</b>`;
+  } else if(S.user && S.user.isGuest){
+    cb.style.display='block';
+    cb.style.background='#27272a';
+    cb.innerHTML = `<span>⚠️ Offline Testing Mode</span> <button class="pri" style="margin-left:8px;padding:3px 10px;font-size:11.5px;min-height:0;border-radius:6px" onclick="login()">Sign in with Google</button>`;
+  } else {
+    cb.style.display='none';
+  }
+}
+if(!S.user)return;
+$('seg').innerHTML=[['company','Company management'],['customers','Customers']].map(([m,l])=>`<button class="${S.mode===m?'on':''}" onclick="setMode('${m}')">${l}</button>`).join('');
+$('tbar').innerHTML=`<select onchange="S.trip=this.value;S.open=S.enr=null;draw()" aria-label="Trip">${[...D.trips].sort((a,b)=>b.s.localeCompare(a.s)).map(t=>`<option value="${t.id}" ${t.id===S.trip?'selected':''}>${esc(t.n)} (${t.st})</option>`).join('')}</select><button class="sec" onclick="newTrip()">+ New trip</button>${S.mode==='customers'?'<button class="pri" onclick="printBill()">Print bill</button>':''}`;
+$('nav').innerHTML=NAV[S.mode].map(([v,l,i])=>`<button class="${S.view===v?'on':''}" onclick="go('${v}')"><span>${i}</span>${l}</button>`).join('');$('main').innerHTML=V[S.view]()}
+function setMode(m){S.mode=m;S.view=NAV[m][0][0];draw();scrollTo(0,0)}function go(v){S.view=v;draw();scrollTo(0,0)}
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3200)}
+function openM(h){$('sheet').innerHTML=`<div class="head"><h2>${h[0]}</h2><button class="ib" onclick="closeM()" aria-label="Close">✕</button></div>${h[1]}`;$('ov').classList.add('on')}function closeM(){$('ov').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+
+function login(){
+  if(window.firebaseLogin){
+    window.firebaseLogin();
+  } else {
+    toast('Firebase config not loaded yet. Using Offline Testing mode.');
+    S.user={email:'adityakumarjbad92@gmail.com (Offline)',name:'Owner (Guest)',isOwner:true,isGuest:true};
+    draw();
+  }
+}
+function logout(){
+  if(window.firebaseLogout && S.user && !S.user.isGuest){
+    window.firebaseLogout();
+  } else {
+    S.user=null;
+    draw();
+    toast('Signed out');
+  }
+}
+function guestMode(){
+  S.user={email:'guest@northbound.local',name:'Tester / Guest',isGuest:true};
+  draw();
+  toast('Entered Offline Testing Mode');
+}
+
+function savePf(){try{localStorage.setItem('nb-pf',JSON.stringify(pf))}catch(e){}}
+function setTh(v){pf.theme=v;if(v==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=v;savePf()}
+function wRow(){return pf.w.map((w,i)=>`<div class="row"><label style="display:flex;gap:10px;align-items:center"><input type="checkbox" ${w[1]?'checked':''} onchange="pf.w[${i}][1]=this.checked?1:0;savePf();draw()">${WT[w[0]]}</label><span><button class="sec" onclick="mv(${i},-1)" aria-label="Move up">▲</button> <button class="sec" onclick="mv(${i},1)" aria-label="Move down">▼</button></span></div>`).join('')}
+function mv(i,d){const j=i+d;if(j<0||j>=pf.w.length)return;[pf.w[i],pf.w[j]]=[pf.w[j],pf.w[i]];savePf();$('wl').innerHTML=wRow();draw()}
+function openSet(){
+  const isOwner = S.user && (S.user.email.includes('adityakumarjbad92@gmail.com') || S.user.email.includes('northboundtrips1@gmail.com'));
+  const isCloud = S.user && !S.user.isGuest;
+  const acctCard = S.user ? `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <b style="font-size:16px">${esc(S.user.name || 'Owner')}</b>
+          ${isOwner ? '<span class="pill g" style="margin-left:6px;font-size:11px">👑 Owner</span>' : '<span class="pill m" style="margin-left:6px;font-size:11px">Staff</span>'}
+          <div class="m" style="font-size:12.5px;margin-top:3px">${esc(S.user.email)}</div>
+          <div id="sync-status" style="font-size:11.5px;margin-top:5px;color:${isCloud?'var(--green)':'var(--amber)'}">
+            ${isCloud ? '● Google Cloud Synced ✓' : '⚠️ Offline Guest Session'}
+          </div>
+        </div>
+        <button class="sec" style="padding:6px 12px;font-size:12px;border-radius:8px" onclick="closeM();logout()">Sign out</button>
+      </div>
+    </div>` : `
+    <div class="card" style="border:1px solid var(--blue)">
+      <b>Google Account (Owner Login)</b>
+      <p class="m" style="font-size:13px;margin:6px 0 12px">Sign in with your Google account to back up and sync all trips, ledger records, and customer bills to the cloud.</p>
+      <button class="pri" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px" onclick="closeM();login()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#fff" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+        Sign in with Google (Owner)
+      </button>
+    </div>`;
+
+  openM(['Settings', `
+    ${acctCard}
+    <div class="card">
+      <b>Theme &amp; Appearance</b>
+      <div class="fl" style="margin-top:8px">
+        <select id="th" onchange="setTh(this.value)" aria-label="Theme" style="width:100%">
+          <option value="titanium">Premium Matte Black &amp; Grey</option>
+          <option value="stealth">Space Black OLED</option>
+          <option value="dark">Dark Navy (Classic)</option>
+          <option value="light">Clean Light</option>
+          <option value="system">System (Auto)</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <b>Home Widgets</b>
+      <div id="wl">${wRow()}</div>
+    </div>
+    <div class="card">
+      <b>Backup &amp; Export</b>
+      <p class="k">Downloads a real backup JSON file with every trip, person, payment and expense.</p>
+      <div class="fl">
+        <button class="pri" onclick="backup()">Download backup</button>
+        <label class="sec" style="display:inline-flex;align-items:center;cursor:pointer">Restore from file<input type="file" accept=".json" hidden onchange="restore(this.files[0])"></label>
+      </div>
+      <div id="rm"></div>
+    </div>
+  `]);
+  $('th').value = pf.theme;
+}
+async function save(name,data){const dl=window.claude&&claude.use?await claude.use('downloads'):null;if(!dl)return false;try{await dl.save({filename:name,data});return true}catch(e){if(e&&e.code!=='declined')toast('Saving is not available here.');return null}}
+async function backup(){const r=await save('northbound-backup-'+TODAY+'.json',JSON.stringify({app:'northbound',version:1,exportedAt:TODAY,data:D},null,1));if(r)toast('Backup file saved.');else if(r===false)toast('Saving files is not available in this view.')}
+function restore(f){if(!f)return;f.text().then(t=>{let m;try{m=JSON.parse(t)}catch(e){}const d=m&&m.app==='northbound'&&m.version===1&&m.data;if(!d||!['trips','cust','enr','exp'].every(k=>Array.isArray(d[k]))){$('rm').innerHTML='<p class="r">That file is not a NorthBound backup.</p>';return}window.pend=d;$('rm').innerHTML=`<p>This backup has ${d.trips.length} trips, ${d.cust.length} people and ${d.enr.length} bookings. Restoring replaces the current demo data.</p><button class="pri" onclick="D=window.pend;S.trip=D.trips[0].id;persist();closeM();draw();toast('Backup restored.')">Replace current data</button>`})}
+function newTrip(){openM(['New trip',`<p class="m">Starts with empty bookings and expenses. Earlier trips, bills and history stay available.</p><div class="fl"><input id="tn" placeholder="Trip name" aria-label="Trip name"><input id="td" placeholder="Destination (optional)" aria-label="Destination"><input id="ts" type="date" value="${TODAY}" aria-label="Start date"></div><p id="tm" class="r"></p><button class="pri" onclick="mkTrip()">Start trip</button>`])}
+function mkTrip(){const n=$('tn').value.trim();if(!n){$('tm').textContent='Enter a trip name.';return}const s=$('ts').value||TODAY,id='t'+Date.now();D.trips.push({id,n,dest:$('td').value.trim(),s,e:s,st:'Open'});S.trip=id;S.open=S.enr=null;persist();closeM();draw();toast('New trip started. Earlier trips are still in the trip list.')}
+function addX(){const a=Math.round(parseFloat($('xa').value)*100),v=$('xv').value.trim();if(!v||!(a>0)){$('xm').textContent='Enter a vendor and an amount above 0.';return}D.exp.push({t:S.trip,cat:$('xc').value,v,a,d:TODAY});persist();draw()}
+function addP(){const n=$('pn').value.trim(),d=$('pp').value.replace(/\D/g,'').replace(/^91(?=\d{10}$)/,''),b=Math.round(parseFloat($('pb').value)*100),x=Math.round((parseFloat($('pd').value)||0)*100),m=$('pm'),e=s=>(m.textContent=s);
+if(!n)return e('Enter the full name.');if(!/^[6-9]\d{9}$/.test(d))return e('Enter a valid 10-digit Indian mobile number.');if(!(b>0))return e('Enter the booking price.');if(x<0||x>=b)return e('Discount must be less than the price.');
+let c=D.cust.find(c=>c.ph.replace(/\D/g,'').slice(-10)===d);if(!c){c={id:'c'+Date.now(),n,ph:'+91 '+d.slice(0,5)+' '+d.slice(5)};D.cust.push(c)}
+if(D.enr.some(z=>z.c===c.id&&z.t===S.trip))return e(c.n+' is already enrolled on this trip.');D.enr.push({id:'e'+Date.now(),c:c.id,t:S.trip,price:b,disc:x,pay:[]});persist();draw();toast('Person added.')}
+function rec(){const e=D.enr.find(x=>x.id===S.enr),v=Math.round(parseFloat($('amt').value)*100),m=$('msg');if(!(v>0)){m.textContent='Enter an amount above 0.';return}if(v>due(e)){m.textContent='That is more than the remaining '+inr(due(e))+'. Overpayments are blocked.';return}
+e.pay.push({d:TODAY,a:v,m:$('mth').value,ref:'REC-'+(e.pay.length+1)});persist();draw();toast('Payment recorded.')}
+function printBill(){openM(['Print bill',`<p class="m">Select people to include their received and due amounts in a PDF statement.</p>`+picker(tot(S.trip).es,'stmt')])}
+const picked=k=>[...document.querySelectorAll('#pk-'+k+' .sel:checked')].map(c=>D.enr.find(e=>e.id===c.value));
+function pv(k){const L=picked(k);if(!L.length){toast('Select at least one person.');return}$('pv-'+k).innerHTML=L.map(e=>paper(e,k)).join('')+'<button class="sec" onclick="window.print()">Print preview</button>'}
+function mk(L,k){const J=window.jspdf&&window.jspdf.jsPDF;if(!J){toast('The PDF tool did not load. Check your connection.');return null}const d=new J({unit:'mm',format:'a4'});
+L.forEach((e,i)=>{if(i)d.addPage();const c=cu(e.c),t=tr(e.t),dd=due(e),ok=k==='paid'&&dd===0;d.setFillColor(11,27,51);d.rect(0,0,210,28,'F');d.setTextColor(255);d.setFontSize(20);d.setFont('helvetica','bold');d.text('NorthBound',14,17);d.setFontSize(11);d.text(ok?'PAID-IN-FULL RECEIPT':'BOOKING STATEMENT',196,12,{align:'right'});d.text(no(e),196,20,{align:'right'});
+d.setTextColor(11,27,51);d.setFontSize(14);d.text(c.n,14,42);d.setFont('helvetica','normal');d.setFontSize(10);d.text(c.ph,14,48);d.text(t.n+', '+t.dest,14,56);d.text(dt(t.s)+' to '+dt(t.e),14,62);let y=76;
+[['Booking price',e.price],['Discount',e.disc],['Payments received',net(e)],['Remaining due',dd]].forEach(([l,v],j)=>{d.setFont('helvetica',j===3?'bold':'normal');d.text(l,14,y);d.text(rs(v),196,y,{align:'right'});d.setDrawColor(200);d.line(14,y+2,196,y+2);y+=10});
+d.setFont('helvetica','bold');d.text('Payments',14,y+4);d.setFont('helvetica','normal');y+=12;e.pay.forEach(p=>{d.text(dt(p.d)+', '+p.m+', '+p.ref,14,y);d.text(rs(p.a),196,y,{align:'right'});y+=7});
+if(ok){d.setTextColor(21,128,61);d.setFont('helvetica','bold');d.setFontSize(44);d.text('PAID',128,y+34,{angle:14})}d.setTextColor(120);d.setFont('helvetica','normal');d.setFontSize(8);d.text('Generated by NorthBound (demo data)',14,287)});return d}
+async function out(k,mode){const L=picked(k);if(!L.length){toast('Select at least one person.');return}const d=mk(L,k);if(!d)return;const name='NorthBound-'+(k==='paid'?'receipts':'statements')+'.pdf';
+const blob=d.output('blob'),f=new File([blob],name,{type:'application/pdf'});
+if(mode==='sh'&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'NorthBound'}).catch(()=>{});return}
+const r=await save(name,blob);if(r){toast(mode==='sh'?'PDF saved. Open WhatsApp and attach it from your files.':'PDF saved.')}else if(r===false){d.save(name);toast('PDF downloaded.')}}
+setTh(pf.theme);draw();
+</script>
+<script src="config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const cfg = window.FIREBASE_CONFIG;
+if (cfg && cfg.apiKey && !cfg.apiKey.startsWith("YOUR_")) {
+  const app = initializeApp(cfg);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  window._fbAuth = auth;
+  window._fbDb = db;
+
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  window.firebaseLogin = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch(e) {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        await signInWithRedirect(auth, provider);
+      } else {
+        toast('Google sign-in failed: ' + (e.message || e.code));
+      }
+    }
+  };
+
+  window.firebaseLogout = async () => {
+    try {
+      await signOut(auth);
+      S.user = null;
+      draw();
+      toast('Signed out');
+    } catch(e) {
+      toast('Sign out failed');
+    }
+  };
+
+  onAuthStateChanged(auth, async (u) => {
+    if (u) {
+      const isOwner = (u.email === 'adityakumarjbad92@gmail.com' || u.email === 'northboundtrips1@gmail.com');
+      S.user = {
+        email: u.email,
+        name: u.displayName || u.email.split('@')[0],
+        photo: u.photoURL,
+        isOwner: isOwner,
+        isGuest: false
+      };
+      draw();
+      toast('Signed in as ' + u.email);
+
+      // Cloud document ref
+      const companyDocRef = doc(db, "companies", "northbound_company");
+      try {
+        const snap = await getDoc(companyDocRef);
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          if (cloudData && Array.isArray(cloudData.trips) && cloudData.trips.length) {
+            D = cloudData;
+            persist();
+            draw();
+          }
+        } else {
+          await setDoc(companyDocRef, D);
+        }
+      } catch(err) {
+        console.warn('Initial cloud read error:', err);
+      }
+
+      window.cloudPush = async () => {
+        try {
+          await setDoc(companyDocRef, D);
+          const st = document.getElementById('sync-status');
+          if (st) st.innerHTML = '● Google Cloud Synced ✓';
+        } catch(err) {
+          console.warn('Cloud sync error:', err);
+          const st = document.getElementById('sync-status');
+          if (st) st.innerHTML = '⚠️ Sync error (check security rules)';
+        }
+      };
+    } else {
+      if (S.user && !S.user.isGuest) {
+        S.user = null;
+        draw();
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
