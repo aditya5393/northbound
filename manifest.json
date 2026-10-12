@@ -1,21 +1,25 @@
 {
-  "name": "NorthBound - Travel & Tour Management",
+  "name": "NorthBound Trips",
   "short_name": "NorthBound",
-  "description": "Travel and tour company management: trips, customers, ledger, expenses, and billing.",
-  "start_url": "./index.html",
+  "description": "Tour operations, traveler enrollments, collections ledger, and billing statements.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0a1428",
-  "theme_color": "#10203d",
+  "orientation": "portrait",
+  "background_color": "#0c101c",
+  "theme_color": "#0c101c",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon.png",
+      "src": "/icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
