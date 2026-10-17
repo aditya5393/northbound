@@ -2,12 +2,12 @@
 // Paste your Firebase Web App config from:
 // Firebase Console -> Project Settings -> General -> Your apps -> Web app
 window.FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBIBp3VMIkWMj2HriEb7QZM6Alvlw-idbA",
+  authDomain: "northbound-14c95.firebaseapp.com",
+  projectId: "northbound-14c95",
+  storageBucket: "northbound-14c95.firebasestorage.app",
+  messagingSenderId: "886284352015",
+  appId: "1:886284352015:web:2586fe591dd7b12894817a"
 };
 
 // App Branding Metadata (Display only — tenant data is isolated per companyId in Firestore)
