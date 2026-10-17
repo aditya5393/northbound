@@ -4,17 +4,22 @@ service cloud.firestore {
     function isSignedIn() {
       return request.auth != null;
     }
-    function getUser() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    // Safe - returns null if user doc does not exist yet (new user, first login)
+    // This fixes sign-in loop: old getUser() failed when doc did not exist yet
+    function userExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function getUserData() {
+      return userExists() ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data : null;
     }
     function myCompanyId() {
-      return getUser().companyId;
+      return userExists() ? getUserData().companyId : null;
     }
     function myRole() {
-      return getUser().role;
+      return userExists() ? getUserData().role : null;
     }
     function sameCompany(companyId) {
-      return isSignedIn() && myCompanyId() == companyId;
+      return isSignedIn() && userExists() && myCompanyId() == companyId;
     }
     function isOwner(companyId) {
       return sameCompany(companyId) && myRole() == 'owner';
@@ -26,10 +31,20 @@ service cloud.firestore {
       return companyId is string && companyId.size() > 0;
     }
 
+    // FIXED USERS - New user can create own doc WITHOUT companyId
+    // Old rule required companyId on create, so first Google login was blocked
+    // and sign-in never completed. Now self create/update allowed.
     match /users/{userId} {
-      allow read: if isSignedIn() && (request.auth.uid == userId || myRole() == 'owner');
-      allow create: if isSignedIn() && request.auth.uid == userId && request.resource.data.companyId is string;
-      allow update: if isSignedIn() && myRole() == 'owner' && request.resource.data.companyId == myCompanyId();
+      // Self can always read own doc, even if it has no companyId yet
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      // Owner can read team member doc in same company (only if owner doc exists)
+      allow get: if isSignedIn() && userExists() && myRole() == 'owner' && resource.data.companyId == myCompanyId();
+      allow list: if false;
+      // New user creates own doc - NO companyId required here
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      // Self can update own doc to set companyId after Create Company
+      // Owner can also update team member
+      allow update: if isSignedIn() && (request.auth.uid == userId || (userExists() && myRole() == 'owner'));
       allow delete: if false;
     }
 
